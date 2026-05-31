@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+    <defs>
+        <radialGradient id="paper" cx="50%" cy="40%" r="80%">
+            <stop offset="0%" stop-color="#FBF5E6"/>
+            <stop offset="100%" stop-color="#EFE2C7"/>
+        </radialGradient>
+    </defs>
+    <rect width="1200" height="630" fill="url(#paper)"/>
+    <rect x="28" y="28" width="1144" height="574" fill="none" stroke="#3F3026" stroke-width="4"/>
+    <rect x="40" y="40" width="1120" height="550" fill="none" stroke="#B0862A" stroke-width="2"/>
+
+    <!-- 方格紙底紋 -->
+    <g stroke="#D7C7B3" stroke-width="1" opacity="0.5">
+        <line x1="40" y1="150" x2="1160" y2="150"/>
+        <line x1="40" y1="480" x2="1160" y2="480"/>
+    </g>
+
+    <text x="600" y="120" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="24" letter-spacing="10" fill="#94432D">A FIELD GUIDE TO RUDE GESTURES OF THE WORLD</text>
+
+    <!-- 標本手勢示意（中指打碼成牛角，避免封面太衝）-->
+    <g transform="translate(600 330)" fill="#E9C9A0" stroke="#6E4E32" stroke-width="4" stroke-linejoin="round">
+        <rect x="-50" y="-20" width="100" height="92" rx="32"/>
+        <rect x="-46" y="-118" width="22" height="104" rx="11"/>
+        <rect x="26" y="-118" width="22" height="104" rx="11"/>
+        <rect x="-22" y="-40" width="22" height="34" rx="11"/>
+        <rect x="2" y="-40" width="22" height="34" rx="11"/>
+        <rect x="-88" y="24" width="60" height="24" rx="12"/>
+    </g>
+
+    <text x="600" y="540" text-anchor="middle" font-family="'Noto Serif TC', serif" font-size="84" font-weight="900" fill="#2C221B">環球失禮手勢圖鑑</text>
+    <text x="600" y="582" text-anchor="middle" font-family="'Noto Sans TC', sans-serif" font-size="26" fill="#6F6450">出國前先翻一翻 · 24 件手勢標本 · 全程 CSS 動畫</text>
+</svg>

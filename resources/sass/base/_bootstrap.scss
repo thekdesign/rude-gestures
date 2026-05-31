@@ -1,0 +1,31 @@
+@use 'reset-css/reset.css';
+@use 'normalize';
+@use '../abstracts/variables' as *;
+@use '../abstracts/functions' as *;
+@use 'mixins' as *;
+@use 'functions' as *;
+
+@tailwind utilities;
+
+html, body {
+    font-family: 'Noto Sans TC', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: theme('colors.gray.900');
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    // 做舊米紙底：暖色漸層 + 兩層淡淡的「污漬」斑點，營造老圖鑑紙感
+    background-color: theme('colors.paper.100');
+    background-image:
+        radial-gradient(circle at 12% 18%, rgba(111, 86, 64, 0.05) 0%, transparent 38%),
+        radial-gradient(circle at 88% 72%, rgba(111, 86, 64, 0.06) 0%, transparent 42%),
+        radial-gradient(circle at 50% 120%, theme('colors.paper.200') 0%, transparent 60%),
+        linear-gradient(180deg, theme('colors.paper.100') 0%, theme('colors.paper.200') 100%);
+    min-height: 100vh;
+}
+
+::selection {
+    background: theme('colors.gold.300');
+    color: theme('colors.primary.900');
+}
