@@ -143,9 +143,9 @@
                     </g>
                 </template>
 
-                <!-- ============ 豎拇指 / 拇指朝下 ============ -->
-                <template v-else-if="pose === 'thumbup' || pose === 'thumbdown'">
-                    <g :transform="pose === 'thumbdown' ? 'rotate(180 60 78)' : ''">
+                <!-- ============ 豎拇指 / 拇指朝下 / 拇指後甩 ============ -->
+                <template v-else-if="['thumbup', 'thumbdown', 'thumbjerk'].includes(pose)">
+                    <g :transform="`rotate(${thumbRot} 60 78)`">
                         <!-- 拳頭本體（指節凹凸）-->
                         <path :d="fistBody" />
                         <path v-for="(d, i) in fistCreases"
@@ -198,6 +198,34 @@
                               class="gh-crease" />
                         <!-- 探頭的拇指 -->
                         <path d="M74 44 C84 42 90 46 90 52 C90 58 84 60 74 58 Z" />
+                    </g>
+                </template>
+
+                <!-- ============ 諷刺鼓掌 ============ -->
+                <template v-else-if="pose === 'clap'">
+                    <g class="gh-clapL">
+                        <g transform="rotate(18 44 86)">
+                            <path d="M30 104 L30 66 Q30 46 41 46 Q52 46 52 66 L52 104 Q41 110 30 104 Z" />
+                            <path d="M35 52 L35 68" class="gh-crease" />
+                            <path d="M41 50 L41 68" class="gh-crease" />
+                            <path d="M47 52 L47 68" class="gh-crease" />
+                        </g>
+                    </g>
+                    <g class="gh-clapR">
+                        <g transform="rotate(-18 76 86)">
+                            <path d="M68 104 L68 66 Q68 46 79 46 Q90 46 90 66 L90 104 Q79 110 68 104 Z" />
+                            <path d="M73 52 L73 68" class="gh-crease" />
+                            <path d="M79 50 L79 68" class="gh-crease" />
+                            <path d="M85 52 L85 68" class="gh-crease" />
+                        </g>
+                    </g>
+                    <g class="gh-spark"
+                       fill="none"
+                       :stroke="accent"
+                       stroke-width="2.2">
+                        <path d="M60 40 Q61 36 60 31" />
+                        <path d="M50 43 Q49 39 46 36" />
+                        <path d="M70 43 Q71 39 74 36" />
                     </g>
                 </template>
 
@@ -307,6 +335,36 @@
                             <path d="M53 96 C51 84 52 72 55 64 C58 60 64 60 66 64 C68 74 67 86 65 96 Z" />
                         </g>
                     </template>
+
+                    <!-- 比鼻子 Cocking a Snook：拇指抵鼻、四指扇開搖動 -->
+                    <template v-else-if="pose === 'nosethumb'">
+                        <path d="M38 49 Q44 46 50 49" class="gh-line" />
+                        <path d="M70 49 Q76 46 82 49" class="gh-line" />
+                        <circle cx="44"
+                                cy="55"
+                                r="3"
+                                :fill="line"
+                                stroke="none" />
+                        <circle cx="76"
+                                cy="55"
+                                r="3"
+                                :fill="line"
+                                stroke="none" />
+                        <path d="M52 80 Q60 85 68 80" class="gh-line" />
+                        <g class="gh-snook">
+                            <!-- 扇形四指 -->
+                            <path :d="F(58, 9, 28, 66)" transform="rotate(-18 60 64)" />
+                            <path :d="F(65, 9, 24, 66)" transform="rotate(-6 65 64)" />
+                            <path :d="F(72, 9, 26, 66)" transform="rotate(6 72 64)" />
+                            <path :d="F(79, 9, 32, 66)" transform="rotate(18 79 64)" />
+                            <!-- 掌根 + 抵著鼻尖的拇指 -->
+                            <ellipse cx="62"
+                                     cy="64"
+                                     rx="10"
+                                     ry="6.5" />
+                            <path d="M54 62 C49 61 45 62 44 65 C46 68 51 68 56 66 Z" />
+                        </g>
+                    </template>
                 </template>
             </g>
         </g>
@@ -339,9 +397,10 @@ const FINGER_POSES = {
     fist: {fingers: {index: 'down', middle: 'down', ring: 'down', pinky: 'down'}, thumb: 'across'},
     blade: {fingers: {index: 'up', middle: 'up', ring: 'up', pinky: 'up'}, thumb: 'tuck', rotateAll: -72},
     cross: {fingers: {index: 'up', middle: 'up', ring: 'down', pinky: 'down'}, thumb: 'across', spread: 'cross'},
+    lshape: {fingers: {index: 'up', middle: 'down', ring: 'down', pinky: 'down'}, thumb: 'out'},
 };
 
-const FACE_POSES = ['chinflick', 'akanbe', 'eyepull', 'bitethumb'];
+const FACE_POSES = ['chinflick', 'akanbe', 'eyepull', 'bitethumb', 'nosethumb'];
 
 // 拇指各型態（彎曲帶關節的 path + 摺線）
 const THUMB_SHAPES = {
@@ -439,6 +498,8 @@ export default {
 
         const beckon = computed(() => !!config.value?.beckon);
         const rotateAll = computed(() => config.value?.rotateAll || 0);
+        // 豎拇指系列的整體旋轉：上=0 / 下=180 / 後甩=-78
+        const thumbRot = computed(() => ({thumbup: 0, thumbdown: 180, thumbjerk: -78}[props.pose] ?? 0));
 
         const spreadAngle = (key) => {
             const mode = config.value?.spread;
@@ -478,7 +539,7 @@ export default {
         });
 
         return {
-            kind, config, beckon, rotateAll,
+            kind, config, beckon, rotateAll, thumbRot,
             fingerShapes, thumbShape, purseFingers,
             palmBody: PALM_BODY, palmKnuckle: PALM_KNUCKLE,
             fistBody: FIST_BODY, fistCreases: FIST_CREASES,
@@ -575,6 +636,25 @@ export default {
     50% { transform: translate(-3px, 4px); }
 }
 
+/* 諷刺鼓掌：兩手往中間拍合 */
+.gh-clapL { transform-box: fill-box; animation: gh-clapl 0.7s ease-in-out infinite; }
+.gh-clapR { transform-box: fill-box; animation: gh-clapr 0.7s ease-in-out infinite; }
+@keyframes gh-clapl {
+    0%, 100% { transform: translateX(-7px) rotate(-3deg); }
+    50% { transform: translateX(3px) rotate(2deg); }
+}
+@keyframes gh-clapr {
+    0%, 100% { transform: translateX(7px) rotate(3deg); }
+    50% { transform: translateX(-3px) rotate(-2deg); }
+}
+
+/* 比鼻子：四指扇形輕搖 */
+.gh-snook { transform-box: fill-box; transform-origin: 55% 100%; animation: gh-snookwiggle 0.6s ease-in-out infinite; }
+@keyframes gh-snookwiggle {
+    0%, 100% { transform: rotate(-5deg); }
+    50% { transform: rotate(5deg); }
+}
+
 .gh-spark { transform-box: fill-box; transform-origin: 30% 90%; animation: gh-sparkle 0.9s ease-in-out infinite; }
 @keyframes gh-sparkle {
     0%, 100% { opacity: 0.2; transform: scale(0.7); }
@@ -607,6 +687,7 @@ export default {
 
 @media (prefers-reduced-motion: reduce) {
     .gh-anim, .gh-beckon, .gh-rubthumb, .gh-spark, .gh-swingarm,
-    .gh-flickhand, .gh-tongue, .gh-bitethumb { animation: none !important; }
+    .gh-flickhand, .gh-tongue, .gh-bitethumb,
+    .gh-clapL, .gh-clapR, .gh-snook { animation: none !important; }
 }
 </style>
